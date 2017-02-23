@@ -1,0 +1,64 @@
+{
+  "extends": "tslint:latest",
+  "rulesDirectory": [
+    "node_modules/tslint-microsoft-contrib"
+  ],
+  "rules": {
+    "semicolon": [true, "never"],
+    "quotemark": [
+      true,
+      "single",
+      "avoid-escape"
+    ],
+    "no-var-requires": false,
+    "member-access": false,
+    "trailing-comma": [
+      true,
+      {
+        "multiline": "never",
+        "singleline": "never"
+      }
+    ],
+    "object-literal-key-quotes": [false],
+    "object-literal-sort-keys": false,
+    "member-ordering": [
+      true,
+      "static-before-instance",
+      "variables-before-functions"
+    ],
+    "no-string-literal": false,
+    "no-console": [
+      true,
+      "debug",
+      "info",
+      "time",
+      "timeEnd",
+      "trace"
+    ],
+    "comment-format": [
+      true,
+      "check-space"
+    ],
+    "typedef-whitespace": [
+      true,
+      {
+        "call-signature": "nospace",
+        "index-signature": "nospace",
+        "parameter": "nospace",
+        "property-declaration": "nospace",
+        "variable-declaration": "nospace"
+      },
+      {
+        "call-signature": "space",
+        "index-signature": "space",
+        "parameter": "space",
+        "property-declaration": "space",
+        "variable-declaration": "space"
+      }
+    ],
+    "ordered-imports": [false],
+    "no-consecutive-blank-lines": [true],
+    "object-literal-shorthand": false,
+    "only-arrow-functions": [false]
+  }
+}

@@ -1,0 +1,9 @@
+.DS_Store
+
+.vscode/
+
+node_modules/
+npm-debug.log
+
+*.ts
+!*.d.ts

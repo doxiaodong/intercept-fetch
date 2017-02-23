@@ -1,0 +1,38 @@
+{
+  "name": "intercept-fetch",
+  "version": "1.0.0-beta.2",
+  "description": "add interceptors in fetch",
+  "main": "bundles/intercept-fetch.umd.min.js",
+  "module": "index.js",
+  "typings": "index.d.ts",
+  "scripts": {
+    "test": "mocha",
+    "tslint": "tslint",
+    "lint": "npm run tslint \"src/**/*.ts\"",
+    "tsc": "tsc -d",
+    "build": "webpack --config webpack.config.js --progress --profile --bail",
+    "clean": "rm -rf bundles",
+    "prepublish": "npm run clean && npm run tsc && npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/doxiaodong/intercept-fetch"
+  },
+  "author": "duxiaodong",
+  "license": "MIT",
+  "dependencies": {},
+  "engines": {
+    "node": ">=6.9.1",
+    "npm": ">=3"
+  },
+  "devDependencies": {
+    "@types/whatwg-fetch": "0.0.33",
+    "chai": "^3.5.0",
+    "mocha": "^3.2.0",
+    "ts-loader": "^2.0.1",
+    "tslint": "^4.4.2",
+    "tslint-microsoft-contrib": "^4.0.0",
+    "typescript": "^2.0.10",
+    "webpack": "^2.2.1"
+  }
+}

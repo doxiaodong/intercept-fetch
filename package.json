@@ -1,6 +1,6 @@
 {
   "name": "intercept-fetch",
-  "version": "1.0.0-beta.2",
+  "version": "1.0.0-beta.3",
   "description": "add interceptors in fetch",
   "main": "bundles/intercept-fetch.umd.min.js",
   "module": "index.js",
@@ -11,8 +11,7 @@
     "lint": "npm run tslint \"src/**/*.ts\"",
     "tsc": "tsc -d",
     "build": "webpack --config webpack.config.js --progress --profile --bail",
-    "clean": "rm -rf bundles",
-    "prepublish": "npm run clean && npm run tsc && npm run build"
+    "clean": "rm -rf bundles"
   },
   "repository": {
     "type": "git",

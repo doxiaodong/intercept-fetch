@@ -122,9 +122,6 @@ I.merge(new Interceptor({
 
 // I
 // a: {
-//  request(url, config){
-//    return Promise.resolve([url, config])
-//  }
 // }, 
 // b: {}
 ```

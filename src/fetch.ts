@@ -150,7 +150,7 @@ async function dealInterceptors(interceptors, ...data): Promise<any> {
   const len = interceptors.length
   let current = 0
   return new Promise(async (resolve) => {
-    copyData = await dig()
+    copyData = await recursion()
     if (Array.isArray(copyData) && copyData.length === 1) {
       resolve(copyData[0])
     } else {
@@ -158,7 +158,7 @@ async function dealInterceptors(interceptors, ...data): Promise<any> {
     }
   })
 
-  async function dig() {
+  async function recursion() {
     // todo: need to copy copyData?
     copyData = copy(copyData)
     if (current < len) {
@@ -167,7 +167,7 @@ async function dealInterceptors(interceptors, ...data): Promise<any> {
         copyData = [copyData]
       }
       current++
-      dig()
+      return recursion()
     }
     return Promise.resolve(copyData)
 

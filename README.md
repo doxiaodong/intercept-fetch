@@ -9,7 +9,7 @@
 
 * install `npm i intercept-fetch --save`
 
-* add a interceptor
+* add interceptors
 ```typescript
 import {
   FetchClient,
@@ -64,6 +64,8 @@ fetchClient.setInterceptors(interceptor)
 
 fetchClient.get('http://google.com')
 
+```
+
 # Differences with https://github.com/werk85/fetch-intercept
 
 * All interceptors(request, response, success, error) are Promise
@@ -74,4 +76,3 @@ fetchClient.get('http://google.com')
 
 * Support typescript
 
-```

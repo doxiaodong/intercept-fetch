@@ -66,6 +66,69 @@ fetchClient.get('http://google.com')
 
 ```
 
+# class FetchClient
+
+* getInterceptors(): IInterceptors
+* setInterceptors(interceptors: Interceptor): void
+* clearInterceptors(): void
+* request(url: string | Request, config?: RequestInit): Promise<any>
+* get(url: string, param?: { [key: string]: any }, config?: RequestInit): Promise<any>
+```typescript
+fetchClient.get('http://google.com', { date: Date.now() })
+```
+* post(url: string, config?: RequestInit): Promise<any>
+* put(url: string, config?: RequestInit): Promise<any>
+* delete(url: string, config?: RequestInit): Promise<any>
+* options(url: string, config?: RequestInit): Promise<any>
+* head(url: string, config?: RequestInit): Promise<any>
+* patch(url: string, config?: RequestInit): Promise<any>
+
+# class Interceptor
+
+* interface
+```typescript
+export interface IInterceptor {
+  id?: number
+  request?: (url: string | Request, config: RequestInit) => Promise<[string | Request, RequestInit]>
+  response?: (res: Response) => Promise<Response>
+  success?: (data: any) => Promise<any>
+  error?: (res: Response) => Promise<Response>
+}
+export interface IInterceptors {
+  [key: string]: IInterceptor
+}
+```
+
+* set(key: string, value: IInterceptor): void
+* get(key: string): IInterceptor
+* delete(key: string): void
+* has(key: string): boolean
+* forEach(callback: (value?: IInterceptor, key?: string, target?: Interceptor) => void, thisArg?): void
+* merge(interceptors: Interceptor): Interceptor // merge this Interceptor to param Interceptor
+```typescript
+const I = new Interceptor({
+  a: {
+
+  }
+})
+I.merge(new Interceptor({
+  a: {
+    request(url, config){
+      return Promise.resolve([url, config])
+    }
+  }, 
+  b: {}
+}))
+
+// I
+// a: {
+//  request(url, config){
+//    return Promise.resolve([url, config])
+//  }
+// }, 
+// b: {}
+```
+
 # Differences with https://github.com/werk85/fetch-intercept
 
 * All interceptors(request, response, success, error) are Promise

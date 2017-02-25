@@ -1,3 +1,4 @@
+import * as copy from 'deepcopy'
 import {
   Interceptor,
   IInterceptor
@@ -5,7 +6,7 @@ import {
 import { RequestMethod } from './method'
 import assign from './assign'
 
-let fetchInterceptor: { [key: string]: Array<(...param) => any> }
+let fetchInterceptor: { [key: string]: Array<(...param) => Promise<any>> }
 
 export class FetchClient {
   interceptors: Interceptor
@@ -69,7 +70,7 @@ export class FetchClient {
     })
   }
 
-  request(url: string | Request, config?: RequestInit) {
+  async request(url: string | Request, config?: RequestInit) {
     let newUrl
     let newConfig = assign({}, config)
 
@@ -81,11 +82,9 @@ export class FetchClient {
       throw new Error('First argument must be a url string or Request instance.')
     }
     // request interceptor
-    fetchInterceptor['request'].forEach((requestFn) => {
-      const ret = requestFn(newUrl, assign({}, newConfig))
-      newUrl = ret.url
-      newConfig = ret.config
-    })
+    const ret = await dealInterceptors(fetchInterceptor['request'], newUrl, newConfig)
+    newUrl = ret[0]
+    newConfig = ret[1]
 
     let request: Request
     if (typeof newUrl === 'string') {
@@ -95,34 +94,18 @@ export class FetchClient {
     } else {
       throw new Error('First argument must be a url string or Request instance.')
     }
-    const response = fetch(request)
-      .then((res: Response) => {
-        fetchInterceptor['response'].forEach((resposeFn) => {
-          res = resposeFn(res)
-        })
-        return res
-      })
-      .then((res: Response) => {
-        if (res.ok) {
-          return res.json()
-            .then((data: any) => {
-              // success interceptor
-              fetchInterceptor['success'].forEach((successFn) => {
-                data = successFn(data)
-              })
-              return data
-            })
-        } else {
-          // error interceptor
-          fetchInterceptor['error'].forEach((errorFn) => {
-            res = errorFn(res)
-          })
-          return res.json().then((errorBody: any) => {
-            return Promise.reject(errorBody)
-          })
-        }
-      })
-    return response
+    let res = await fetch(request)
+    res = await dealInterceptors(fetchInterceptor['response'], res)
+    if (res.ok) {
+      let data = await res.json()
+      data = await dealInterceptors(fetchInterceptor['success'], data)
+      return data
+    }
+    res = await dealInterceptors(fetchInterceptor['error'], res)
+
+    const errBody = await res.json()
+    return Promise.reject(errBody)
+
   }
 
   // add params to get
@@ -160,4 +143,33 @@ function addQueryString(url: string, param: { [key: string]: any }): string {
     }
   }
   return url
+}
+
+async function dealInterceptors(interceptors, ...data): Promise<any> {
+  let copyData = copy(data)
+  const len = interceptors.length
+  let current = 0
+  return new Promise(async (resolve) => {
+    copyData = await dig()
+    if (Array.isArray(copyData) && copyData.length === 1) {
+      resolve(copyData[0])
+    } else {
+      resolve(copyData)
+    }
+  })
+
+  async function dig() {
+    // todo: need to copy copyData?
+    copyData = copy(copyData)
+    if (current < len) {
+      copyData = await interceptors[current](...copyData)
+      if (!Array.isArray(copyData)) {
+        copyData = [copyData]
+      }
+      current++
+      dig()
+    }
+    return Promise.resolve(copyData)
+
+  }
 }

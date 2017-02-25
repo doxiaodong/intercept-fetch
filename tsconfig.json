@@ -5,7 +5,6 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "sourceMap": true,
-    "noEmitHelpers": true,
     "strictNullChecks": false,
     "noUnusedLocals": true,
     "baseUrl": ".",

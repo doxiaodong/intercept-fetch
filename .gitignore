@@ -9,4 +9,5 @@ bundles/
 !webpack.config.js
 !test/*.js
 *.d.ts
+!deepcopy.d.ts
 *.js.map

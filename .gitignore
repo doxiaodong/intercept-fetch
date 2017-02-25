@@ -7,5 +7,6 @@ bundles/
 
 *.js
 !webpack.config.js
+!test/*.js
 *.d.ts
 *.js.map

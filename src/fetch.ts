@@ -71,10 +71,18 @@ export class FetchClient {
 
   request(url: string | Request, config?: RequestInit) {
     let newUrl
-    let newConfig
+    let newConfig = assign({}, config)
+
+    if (typeof url === 'string') {
+      newUrl = url
+    } else if (url instanceof Request) {
+      newUrl = url.clone()
+    } else {
+      throw new Error('First argument must be a url string or Request instance.')
+    }
     // request interceptor
     fetchInterceptor['request'].forEach((requestFn) => {
-      const ret = requestFn(url, assign({}, config))
+      const ret = requestFn(newUrl, assign({}, newConfig))
       newUrl = ret.url
       newConfig = ret.config
     })

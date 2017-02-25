@@ -11,6 +11,9 @@ let fetchInterceptor: { [key: string]: Array<(...param) => Promise<any>> }
 export class FetchClient {
   interceptors: Interceptor
   constructor() {
+    if (typeof fetch !== 'function') {
+      throw new Error('FetchClient based on fetch api!!')
+    }
     this.clearInterceptors()
   }
 

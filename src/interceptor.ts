@@ -43,7 +43,7 @@ export interface IInterceptors {
 
 export interface IInterceptor {
   id?: number
-  request?: (req: Request) => Request
+  request?: (url: string | Request, config: RequestInit) => { url: string | Request, config: RequestInit }
   response?: (res: Response) => Response
   success?: (data: any) => any
   error?: (res: Response) => Response

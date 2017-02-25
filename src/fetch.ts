@@ -2,8 +2,10 @@ import {
   Interceptor,
   IInterceptor
 } from './interceptor'
+import { RequestMethod } from './method'
+import assign from './assign'
 
-let fetchInterceptor: {[key: string]: Array<(...param) => any>}
+let fetchInterceptor: { [key: string]: Array<(...param) => any> }
 
 export class FetchClient {
   interceptors: Interceptor
@@ -68,83 +70,81 @@ export class FetchClient {
   }
 
   request(url: string | Request, config?: RequestInit) {
+    let newUrl
+    let newConfig
+    // request interceptor
+    fetchInterceptor['request'].forEach((requestFn) => {
+      const ret = requestFn(url, assign({}, config))
+      newUrl = ret.url
+      newConfig = ret.config
+    })
+
     let request: Request
-    if (typeof url === 'string') {
-      request = new Request(url, config)
-    } else if (url instanceof Request) {
-      request = url
+    if (typeof newUrl === 'string') {
+      request = new Request(newUrl, newConfig)
+    } else if (newUrl instanceof Request) {
+      request = newUrl
     } else {
       throw new Error('First argument must be a url string or Request instance.')
     }
-    // request interceptor
-    fetchInterceptor['request'].forEach((requestFn) => {
-      request = requestFn(request)
-    })
     const response = fetch(request)
-    .then((res: Response) => {
-      fetchInterceptor['response'].forEach((resposeFn) => {
-        res = resposeFn(res)
+      .then((res: Response) => {
+        fetchInterceptor['response'].forEach((resposeFn) => {
+          res = resposeFn(res)
+        })
+        return res
       })
-      return res
-    })
-    .then((res: Response) => {
-      if (res.ok) {
-        return res.json()
-        .then((data: any) => {
-          // success interceptor
-          fetchInterceptor['success'].forEach((successFn) => {
-            data = successFn(data)
+      .then((res: Response) => {
+        if (res.ok) {
+          return res.json()
+            .then((data: any) => {
+              // success interceptor
+              fetchInterceptor['success'].forEach((successFn) => {
+                data = successFn(data)
+              })
+              return data
+            })
+        } else {
+          // error interceptor
+          fetchInterceptor['error'].forEach((errorFn) => {
+            res = errorFn(res)
           })
-          return data
-        })
-      } else {
-        // error interceptor
-        fetchInterceptor['error'].forEach((errorFn) => {
-          res = errorFn(res)
-        })
-        return res.json().then((errorBody: any) => {
-          return Promise.reject(errorBody)
-        })
-      }
-    })
+          return res.json().then((errorBody: any) => {
+            return Promise.reject(errorBody)
+          })
+        }
+      })
     return response
   }
 
   // add params to get
-  get(url: string, param?: {[key: string]: any}, config?: RequestInit) {
+  get(url: string, param?: { [key: string]: any }, config?: RequestInit) {
     if (param) {
       url = addQueryString(url, param)
     }
-    const request = new Request(url, config)
-    return this.request(request)
+    return this.request(url, assign({ method: RequestMethod.Get }, config))
   }
   post(url: string, config?: RequestInit) {
-    const request = new Request(url, config)
-    return this.request(request)
+    return this.request(url, assign({ method: RequestMethod.Post }, config))
   }
   put(url: string, config?: RequestInit) {
-    const request = new Request(url, config)
-    return this.request(request)
+    return this.request(url, assign({ method: RequestMethod.Put }, config))
   }
   delete(url: string, config?: RequestInit) {
-    const request = new Request(url, config)
-    return this.request(request)
+    return this.request(url, assign({ method: RequestMethod.Delete }, config))
   }
   options(url: string, config?: RequestInit) {
-    const request = new Request(url, config)
-    return this.request(request)
+    return this.request(url, assign({ method: RequestMethod.Options }, config))
   }
   head(url: string, config?: RequestInit) {
-    const request = new Request(url, config)
-    return this.request(request)
+    return this.request(url, assign({ method: RequestMethod.Head }, config))
   }
   patch(url: string, config?: RequestInit) {
-    const request = new Request(url, config)
-    return this.request(request)
+    return this.request(url, assign({ method: RequestMethod.Patch }, config))
   }
 }
 
-function addQueryString(url: string, param: {[key: string]: any}): string {
+function addQueryString(url: string, param: { [key: string]: any }): string {
   for (const key in param) {
     if (param.hasOwnProperty(key)) {
       url += url.indexOf('?') === -1 ? '?' : '&'

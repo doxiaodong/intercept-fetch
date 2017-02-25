@@ -14,10 +14,7 @@
       "dom"
     ],
     "paths": {
-    },
-    "types": [
-      "whatwg-fetch"
-    ]
+    }
   },
   "exclude": [
     "node_modules"

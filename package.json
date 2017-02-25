@@ -1,6 +1,6 @@
 {
   "name": "intercept-fetch",
-  "version": "1.0.0-beta.3",
+  "version": "1.0.0-beta.4",
   "description": "add interceptors in fetch",
   "main": "bundles/intercept-fetch.umd.min.js",
   "module": "index.js",

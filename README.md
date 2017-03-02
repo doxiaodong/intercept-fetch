@@ -66,6 +66,8 @@ fetchClient.get('http://google.com')
 
 ```
 
+> Warning: at end of each interceptor, you can reject(any) to catch, if you want to complete the fetch flow, please resolve as ref example!!!
+
 # class FetchClient
 
 * getInterceptors(): IInterceptors

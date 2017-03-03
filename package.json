@@ -1,6 +1,6 @@
 {
   "name": "intercept-fetch",
-  "version": "1.0.0-rc.4",
+  "version": "1.0.0",
   "description": "add interceptors in fetch",
   "main": "bundles/intercept-fetch.umd.min.js",
   "module": "index.js",
@@ -32,7 +32,7 @@
     "chai": "^3.5.0",
     "mocha": "^3.2.0",
     "ts-loader": "^2.0.1",
-    "tslint": "^4.4.2",
+    "tslint": "^4.5.1",
     "tslint-microsoft-contrib": "^4.0.0",
     "typescript": "^2.2.1",
     "webpack": "^2.2.1"

@@ -161,10 +161,8 @@ async function dealInterceptors(interceptors, ...data): Promise<any> {
 
   const len = interceptors.length
   let current = 0
-  return new Promise(async (resolve) => {
-    copyData = await recursion()
-    resolve(copyData)
-  })
+  copyData = await recursion()
+  return copyData
 
   async function recursion() {
     // todo: need to copy copyData?
@@ -178,7 +176,7 @@ async function dealInterceptors(interceptors, ...data): Promise<any> {
       current++
       return recursion()
     }
-    return Promise.resolve(copyData)
+    return copyData
 
   }
 }

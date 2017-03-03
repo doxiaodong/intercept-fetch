@@ -149,25 +149,31 @@ function addQueryString(url: string, param: { [key: string]: any }): string {
 }
 
 async function dealInterceptors(interceptors, ...data): Promise<any> {
-  let copyData = copy(data)
+  let isRequest = false
+  const dataLen = data.length
+  let copyData
+  if (dataLen === 2) {
+    isRequest = true
+    copyData = copy(data)
+  } else {
+    copyData = copy(data[0])
+  }
+
   const len = interceptors.length
   let current = 0
   return new Promise(async (resolve) => {
     copyData = await recursion()
-    if (Array.isArray(copyData) && copyData.length === 1) {
-      resolve(copyData[0])
-    } else {
-      resolve(copyData)
-    }
+    resolve(copyData)
   })
 
   async function recursion() {
     // todo: need to copy copyData?
     copyData = copy(copyData)
     if (current < len) {
-      copyData = await interceptors[current](...copyData)
-      if (!Array.isArray(copyData)) {
-        copyData = [copyData]
+      if (isRequest) {
+        copyData = await interceptors[current](...copyData)
+      } else {
+        copyData = await interceptors[current](copyData)
       }
       current++
       return recursion()

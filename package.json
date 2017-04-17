@@ -27,7 +27,7 @@
     "deepcopy": "^0.6.3"
   },
   "engines": {
-    "node": ">=6.9.1",
+    "node": ">=7.6.0",
     "npm": ">=3"
   },
   "devDependencies": {

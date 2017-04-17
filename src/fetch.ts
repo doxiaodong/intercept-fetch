@@ -9,6 +9,7 @@ import assign from './assign'
 let fetchInterceptor: { [key: string]: Array<(...param) => Promise<any>> }
 
 export class FetchClient {
+  timeout = 10 * 1000
   interceptors: Interceptor
   constructor() {
     if (typeof fetch !== 'function') {
@@ -97,18 +98,26 @@ export class FetchClient {
     } else {
       throw new Error('First argument must be a url string or Request instance.')
     }
-    let res = await fetch(request)
-    res = await dealInterceptors(fetchInterceptor['response'], res)
-    if (res.ok) {
-      let data = await res.json()
-      data = await dealInterceptors(fetchInterceptor['success'], data)
-      return data
-    }
-    res = await dealInterceptors(fetchInterceptor['error'], res)
 
-    const errBody = await res.json()
-    return Promise.reject(errBody)
+    return new Promise(async (resolve, reject) => {
+      const time = setTimeout(() => {
+        reject('fetch request timeout')
+      }, this.timeout)
 
+      let res = await fetch(request)
+      clearTimeout(time)
+
+      res = await dealInterceptors(fetchInterceptor['response'], res)
+      if (res.ok) {
+        let data = await res.json()
+        data = await dealInterceptors(fetchInterceptor['success'], data)
+        resolve(data)
+      }
+      res = await dealInterceptors(fetchInterceptor['error'], res)
+
+      const errBody = await res.json()
+      reject(errBody)
+    })
   }
 
   // add params to get

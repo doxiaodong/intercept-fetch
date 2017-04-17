@@ -4,10 +4,11 @@ node_modules/
 npm-debug.log
 
 bundles/
+coverage/
 
 *.js
 !webpack.config.js
-!test/*.js
+!__tests__/*.js
 *.d.ts
 !deepcopy.d.ts
 *.js.map

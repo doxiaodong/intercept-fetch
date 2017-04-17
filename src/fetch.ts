@@ -111,7 +111,7 @@ export class FetchClient {
       if (res.ok) {
         let data = await res.json()
         data = await dealInterceptors(fetchInterceptor['success'], data)
-        resolve(data)
+        return resolve(data)
       }
       res = await dealInterceptors(fetchInterceptor['error'], res)
 

@@ -7,9 +7,11 @@ async function a() {
 }
 
 (async () => {
+  let data
   try {
-    await a()
+    data = await a()
   } catch (error) {
     console.log('last', error)
   }
+  console.log(data)
 })()

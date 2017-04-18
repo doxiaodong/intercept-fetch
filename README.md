@@ -56,6 +56,11 @@ const interceptor = new Interceptor({
     },
     error(error) {
       return Promise.resolve(error)
+    },
+    timeout(url) {
+      return Promise.resolve('timeout)
+      // default timeout is 10s
+      // or return Promise.reject('timeout)
     }
   }
 })

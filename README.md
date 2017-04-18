@@ -100,6 +100,7 @@ export interface IInterceptor {
   response?: (res: Response) => Promise<Response>
   success?: (data: any) => Promise<any>
   error?: (res: Response) => Promise<Response>
+  timeout?: (url: string) => Promise<any>
 }
 export interface IInterceptors {
   [key: string]: IInterceptor

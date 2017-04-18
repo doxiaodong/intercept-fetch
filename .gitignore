@@ -7,7 +7,7 @@ bundles/
 coverage/
 
 *.js
-!webpack.config.js
+!webpack.*.js
 !__tests__/*.js
 *.d.ts
 !deepcopy.d.ts

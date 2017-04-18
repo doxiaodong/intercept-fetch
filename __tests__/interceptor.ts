@@ -42,6 +42,10 @@ describe('Interceptor test', () => {
       b: {
         id: 3
       }
+    })).merge(new Interceptor({
+      b: {
+        id: 4
+      }
     }))
     expect(interceptor.get('a')).toEqual({ id: 2 })
     expect(interceptor.get('b')).toEqual({ id: 3 })

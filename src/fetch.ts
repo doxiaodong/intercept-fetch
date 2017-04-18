@@ -84,7 +84,7 @@ export class FetchClient {
     })
   }
 
-  async request(url: string | Request, config?: RequestInit) {
+  async request(url: string | Request, config?: RequestInit): Promise<any> {
     let newUrl
     let newConfig = { ...config }
 

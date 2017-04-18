@@ -44,6 +44,7 @@ export interface IInterceptors {
 export interface IInterceptor {
   id?: number
   request?: (url: string | Request, config: RequestInit) => Promise<[string | Request, RequestInit]>
+  requestError?: (error: any) => Promise<any>
   response?: (res: Response) => Promise<Response>
   success?: (data: any) => Promise<any>
   error?: (res: Response) => Promise<Response>

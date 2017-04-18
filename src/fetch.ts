@@ -22,6 +22,7 @@ export class FetchClient {
 
     fetchInterceptor = {
       request: [],
+      requestError: [],
       response: [],
       success: [],
       error: [],
@@ -61,6 +62,7 @@ export class FetchClient {
     sortInterceptors.forEach((value) => {
       const {
         request,
+        requestError,
         response,
         success,
         error,
@@ -68,6 +70,9 @@ export class FetchClient {
       } = value
       if (request) {
         fetchInterceptor['request'].push(request)
+      }
+      if (requestError) {
+        fetchInterceptor['requestError'].push(requestError)
       }
       if (response) {
         fetchInterceptor['response'].push(response)
@@ -126,15 +131,21 @@ export class FetchClient {
       }, this.timeout)
 
       try {
-        let res = await fetch(request)
-        clearTimeout(time)
+        let res
+        try {
+          res = await fetch(request)
+          clearTimeout(time)
+        } catch (error) {
+          clearTimeout(time)
+          err = await dealInterceptors(fetchInterceptor['requestError'], error)
+          reject(err)
+        }
 
         res = await dealInterceptors(fetchInterceptor['response'], res)
         if (res.ok) {
           let data = await res.json()
           data = await dealInterceptors(fetchInterceptor['success'], data)
           resolve(data)
-          return
         }
         res = await dealInterceptors(fetchInterceptor['error'], res)
 
@@ -184,11 +195,11 @@ function addQueryString(url: string, param: { [key: string]: any }): string {
 }
 
 async function dealInterceptors(interceptors, ...data): Promise<any> {
-  let isRequest = false
+  let isDoubleParams = false
   const dataLen = data.length
   let copyData
   if (dataLen === 2) {
-    isRequest = true
+    isDoubleParams = true
     copyData = copy(data)
   } else {
     copyData = copy(data[0])
@@ -203,7 +214,7 @@ async function dealInterceptors(interceptors, ...data): Promise<any> {
     // todo: need to copy copyData?
     copyData = copy(copyData)
     if (current < len) {
-      if (isRequest) {
+      if (isDoubleParams) {
         copyData = await interceptors[current](...copyData)
       } else {
         copyData = await interceptors[current](copyData)

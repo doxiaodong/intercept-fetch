@@ -42,6 +42,10 @@ const interceptor = new Interceptor({
       config.credentials = 'include'
       return Promise.resolve([url, config])
     },
+    requestError(fetchError) {
+      return Promise.reject('requestError reject')
+      // or return Promise.resolve('requestError resolve')
+    },
     response(response) {
       return Promise.resolve(error)
     },
@@ -54,11 +58,11 @@ const interceptor = new Interceptor({
         }, 1000)
       })
     },
-    error(error) {
-      return Promise.resolve(error)
+    error(res) {
+      return Promise.resolve(res)
     },
     timeout(url) {
-      return Promise.resolve('timeout)
+      return Promise.resolve('timeout')
       // default timeout is 10s
       // or return Promise.reject('timeout)
     }

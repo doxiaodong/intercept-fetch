@@ -12,7 +12,6 @@ const interceptor = new Interceptor({
       // can also use Promise.resolve(url)
     },
     response(res) {
-      console.log(res)
       return Promise.resolve(res)
     }
   }

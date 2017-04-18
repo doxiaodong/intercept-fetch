@@ -16,7 +16,10 @@
     }
   },
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "example",
+    "__tests__",
+    "mock"
   ],
   "compileOnSave": false,
   "buildOnSave": false

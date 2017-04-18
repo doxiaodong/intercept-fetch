@@ -4,7 +4,6 @@ import {
   IInterceptor
 } from './interceptor'
 import { RequestMethod } from './method'
-import assign from './assign'
 
 let fetchInterceptor: { [key: string]: Array<(...param) => Promise<any>> }
 
@@ -25,7 +24,8 @@ export class FetchClient {
       request: [],
       response: [],
       success: [],
-      error: []
+      error: [],
+      timeout: []
     }
   }
 
@@ -59,24 +59,34 @@ export class FetchClient {
       return b.id - a.id
     }).reverse()
     sortInterceptors.forEach((value) => {
-      if (value.request) {
-        fetchInterceptor['request'].push(value.request)
+      const {
+        request,
+        response,
+        success,
+        error,
+        timeout
+      } = value
+      if (request) {
+        fetchInterceptor['request'].push(request)
       }
-      if (value.response) {
-        fetchInterceptor['response'].push(value.response)
+      if (response) {
+        fetchInterceptor['response'].push(response)
       }
-      if (value.success) {
-        fetchInterceptor['success'].push(value.success)
+      if (success) {
+        fetchInterceptor['success'].push(success)
       }
-      if (value.error) {
-        fetchInterceptor['error'].push(value.error)
+      if (error) {
+        fetchInterceptor['error'].push(error)
+      }
+      if (timeout) {
+        fetchInterceptor['timeout'].push(timeout)
       }
     })
   }
 
   async request(url: string | Request, config?: RequestInit) {
     let newUrl
-    let newConfig = assign({}, config)
+    let newConfig = { ...config }
 
     if (typeof url === 'string') {
       newUrl = url
@@ -86,7 +96,12 @@ export class FetchClient {
       throw new Error('First argument must be a url string or Request instance.')
     }
     // request interceptor
-    const ret = await dealInterceptors(fetchInterceptor['request'], newUrl, newConfig)
+    let ret
+    try {
+      ret = await dealInterceptors(fetchInterceptor['request'], newUrl, newConfig)
+    } catch (error) {
+      return Promise.reject(error)
+    }
     newUrl = ret[0]
     newConfig = ret[1]
 
@@ -100,23 +115,34 @@ export class FetchClient {
     }
 
     return new Promise(async (resolve, reject) => {
-      const time = setTimeout(() => {
-        reject('fetch request timeout')
+      let err
+      const time = setTimeout(async () => {
+        try {
+          err = await dealInterceptors(fetchInterceptor['timeout'], newUrl)
+        } catch (error) {
+          err = error
+        }
+        reject(err)
       }, this.timeout)
 
-      let res = await fetch(request)
-      clearTimeout(time)
+      try {
+        let res = await fetch(request)
+        clearTimeout(time)
 
-      res = await dealInterceptors(fetchInterceptor['response'], res)
-      if (res.ok) {
-        let data = await res.json()
-        data = await dealInterceptors(fetchInterceptor['success'], data)
-        return resolve(data)
+        res = await dealInterceptors(fetchInterceptor['response'], res)
+        if (res.ok) {
+          let data = await res.json()
+          data = await dealInterceptors(fetchInterceptor['success'], data)
+          resolve(data)
+          return
+        }
+        res = await dealInterceptors(fetchInterceptor['error'], res)
+
+        err = await res.json()
+      } catch (error) {
+        err = error
       }
-      res = await dealInterceptors(fetchInterceptor['error'], res)
-
-      const errBody = await res.json()
-      reject(errBody)
+      reject(err)
     })
   }
 
@@ -125,25 +151,25 @@ export class FetchClient {
     if (param) {
       url = addQueryString(url, param)
     }
-    return this.request(url, assign({ method: RequestMethod.Get }, config))
+    return this.request(url, { method: RequestMethod.Get, ...config })
   }
   post(url: string, config?: RequestInit) {
-    return this.request(url, assign({ method: RequestMethod.Post }, config))
+    return this.request(url, { method: RequestMethod.Post, ...config })
   }
   put(url: string, config?: RequestInit) {
-    return this.request(url, assign({ method: RequestMethod.Put }, config))
+    return this.request(url, { method: RequestMethod.Put, ...config })
   }
   delete(url: string, config?: RequestInit) {
-    return this.request(url, assign({ method: RequestMethod.Delete }, config))
+    return this.request(url, { method: RequestMethod.Delete, ...config })
   }
   options(url: string, config?: RequestInit) {
-    return this.request(url, assign({ method: RequestMethod.Options }, config))
+    return this.request(url, { method: RequestMethod.Options, ...config })
   }
   head(url: string, config?: RequestInit) {
-    return this.request(url, assign({ method: RequestMethod.Head }, config))
+    return this.request(url, { method: RequestMethod.Head, ...config })
   }
   patch(url: string, config?: RequestInit) {
-    return this.request(url, assign({ method: RequestMethod.Patch }, config))
+    return this.request(url, { method: RequestMethod.Patch, ...config })
   }
 }
 

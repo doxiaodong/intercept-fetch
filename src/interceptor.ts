@@ -1,7 +1,7 @@
 export class Interceptor {
-  interceptors: IInterceptors
+  private interceptors: IInterceptors
   constructor(interceptors: IInterceptors) {
-    this.interceptors = Object.assign({}, interceptors)
+    this.interceptors = { ...interceptors }
   }
   set(key, value: IInterceptor): void {
     this.interceptors[key] = value
@@ -47,4 +47,5 @@ export interface IInterceptor {
   response?: (res: Response) => Promise<Response>
   success?: (data: any) => Promise<any>
   error?: (res: Response) => Promise<Response>
+  timeout?: (url: string) => Promise<any>
 }

@@ -13,7 +13,7 @@
     "lint": "npm run tslint \"src/**/*.ts\"",
     "tsc": "tsc -d",
     "build": "webpack --config webpack.config.js --progress --profile --bail",
-    "clean": "rm -rf bundles",
+    "clean": "rm -rf bundles && rm -rf coverage",
     "prepub": "npm run clean && npm test && npm run tsc && npm run build",
     "pub": "npm publish --registry http://registry.npmjs.org"
   },

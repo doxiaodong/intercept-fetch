@@ -121,12 +121,14 @@ export class FetchClient {
 
     return new Promise(async (resolve, reject) => {
       let err
+      let isTimeout = false
       const time = setTimeout(async () => {
         try {
           err = await dealInterceptors(fetchInterceptor['timeout'], newUrl)
         } catch (error) {
           err = error
         }
+        isTimeout = true
         reject(err)
       }, this.timeout)
 
@@ -139,6 +141,10 @@ export class FetchClient {
           clearTimeout(time)
           err = await dealInterceptors(fetchInterceptor['requestError'], error)
           reject(err)
+          return
+        }
+        if (isTimeout) {
+          return
         }
 
         res = await dealInterceptors(fetchInterceptor['response'], res)
@@ -146,6 +152,7 @@ export class FetchClient {
           let data = await res.json()
           data = await dealInterceptors(fetchInterceptor['success'], data)
           resolve(data)
+          return
         }
         res = await dealInterceptors(fetchInterceptor['error'], res)
 

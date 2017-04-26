@@ -169,25 +169,25 @@ export class FetchClient {
     if (param) {
       url = addQueryString(url, param)
     }
-    return this.request(url, { method: RequestMethod.Get, ...config })
+    return this.request(url, { ...config, method: RequestMethod.Get })
   }
   post(url: string, config?: RequestInit) {
-    return this.request(url, { method: RequestMethod.Post, ...config })
+    return this.request(url, { ...config, method: RequestMethod.Post })
   }
   put(url: string, config?: RequestInit) {
-    return this.request(url, { method: RequestMethod.Put, ...config })
+    return this.request(url, { ...config, method: RequestMethod.Put })
   }
   delete(url: string, config?: RequestInit) {
-    return this.request(url, { method: RequestMethod.Delete, ...config })
+    return this.request(url, { ...config, method: RequestMethod.Delete })
   }
   options(url: string, config?: RequestInit) {
-    return this.request(url, { method: RequestMethod.Options, ...config })
+    return this.request(url, { ...config, method: RequestMethod.Options })
   }
   head(url: string, config?: RequestInit) {
-    return this.request(url, { method: RequestMethod.Head, ...config })
+    return this.request(url, { ...config, method: RequestMethod.Head })
   }
   patch(url: string, config?: RequestInit) {
-    return this.request(url, { method: RequestMethod.Patch, ...config })
+    return this.request(url, { ...config, method: RequestMethod.Patch })
   }
 }
 

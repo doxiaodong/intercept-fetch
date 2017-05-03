@@ -155,8 +155,11 @@ export class FetchClient {
           return
         }
         res = await dealInterceptors(fetchInterceptor['error'], res)
-
-        err = await res.json()
+        try {
+          err = await res.json()
+        } catch (error) {
+          err = error
+        }
       } catch (error) {
         err = error
       }

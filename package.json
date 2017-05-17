@@ -24,7 +24,7 @@
   "author": "duxiaodong",
   "license": "MIT",
   "dependencies": {
-    "deepcopy": "^0.6.3"
+    "lodash-es": "^4.17.4"
   },
   "engines": {
     "node": ">=7.6.0",
@@ -32,24 +32,28 @@
   },
   "devDependencies": {
     "@types/fetch-mock": "^5.8.2",
-    "@types/jest": "^19.2.2",
+    "@types/jest": "^19.2.3",
+    "@types/lodash-es": "^4.14.5",
     "fetch-mock": "^5.10.0",
     "html-webpack-plugin": "^2.28.0",
-    "jest": "^19.0.2",
-    "ts-jest": "^19.0.11",
+    "jest": "^20.0.1",
+    "ts-jest": "^20.0.3",
     "ts-loader": "^2.0.3",
-    "tslint": "^5.1.0",
-    "tslint-microsoft-contrib": "^4.0.1",
-    "typescript": "^2.2.2",
-    "webpack": "^2.4.1",
-    "webpack-dev-server": "^2.4.4",
+    "tslint": "^5.2.0",
+    "tslint-microsoft-contrib": "^5.0.0",
+    "typescript": "^2.3.2",
+    "webpack": "^2.5.1",
+    "webpack-dev-server": "^2.4.5",
     "whatwg-fetch": "^2.0.3"
   },
   "jest": {
     "transform": {
       ".(ts|js)": "<rootDir>/node_modules/ts-jest/preprocessor.js"
     },
-    "testResultsProcessor": "<rootDir>/node_modules/ts-jest/coverageprocessor.js",
+    "transformIgnorePatterns": [
+      "<rootDir>/node_modules/(?!lodash-es)/"
+    ],
+    "mapCoverage": true,
     "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts|js)$",
     "coverageDirectory": "coverage",
     "moduleFileExtensions": [

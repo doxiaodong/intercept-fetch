@@ -10,16 +10,6 @@
   version "19.2.3"
   resolved "http://registry.npm.taobao.org/@types/jest/download/@types/jest-19.2.3.tgz#61748040e8589a891dfc2ec1d16a2dd74482980e"
 
-"@types/lodash-es@^4.14.5":
-  version "4.14.5"
-  resolved "http://registry.npm.taobao.org/@types/lodash-es/download/@types/lodash-es-4.14.5.tgz#57c11845eaf6a7d2a9095e9533fed4980f3d5784"
-  dependencies:
-    "@types/lodash" "*"
-
-"@types/lodash@*":
-  version "4.14.64"
-  resolved "http://registry.npm.taobao.org/@types/lodash/download/@types/lodash-4.14.64.tgz#979cf3a3d4a368670840bf9b3e448dc33ffe84ee"
-
 abab@^1.0.3:
   version "1.0.3"
   resolved "http://registry.npm.taobao.org/abab/download/abab-1.0.3.tgz#b81de5f7274ec4e756d797cd834f303642724e5d"
@@ -2455,10 +2445,6 @@ locate-path@^2.0.0:
   dependencies:
     p-locate "^2.0.0"
     path-exists "^3.0.0"
-
-lodash-es@^4.17.4:
-  version "4.17.4"
-  resolved "http://registry.npm.taobao.org/lodash-es/download/lodash-es-4.17.4.tgz#dcc1d7552e150a0640073ba9cb31d70f032950e7"
 
 lodash@^4.14.0, lodash@^4.17.2, lodash@^4.17.3, lodash@^4.2.0:
   version "4.17.4"

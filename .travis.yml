@@ -8,3 +8,5 @@ cache:
     - node_modules
 
 script: $TRAVIS_BUILD_DIR/.travis.sh
+
+sudo: required

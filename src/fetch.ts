@@ -1,4 +1,4 @@
-import * as copy from 'deepcopy'
+import cloneDeep from 'lodash-es/cloneDeep'
 import {
   Interceptor,
   IInterceptor
@@ -210,9 +210,9 @@ async function dealInterceptors(interceptors, ...data): Promise<any> {
   let copyData
   if (dataLen === 2) {
     isDoubleParams = true
-    copyData = copy(data)
+    copyData = cloneDeep(data)
   } else {
-    copyData = copy(data[0])
+    copyData = cloneDeep(data[0])
   }
 
   const len = interceptors.length
@@ -222,7 +222,7 @@ async function dealInterceptors(interceptors, ...data): Promise<any> {
 
   async function recursion() {
     // todo: need to copy copyData?
-    copyData = copy(copyData)
+    copyData = cloneDeep(copyData)
     if (current < len) {
       if (isDoubleParams) {
         copyData = await interceptors[current](...copyData)

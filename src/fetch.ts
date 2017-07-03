@@ -115,36 +115,30 @@ export class FetchClient {
     }
     let res
     let err
-    try {
-      res = await new Promise(async (resolve, reject) => {
-        let isTimeout = false
-        const time = setTimeout(async () => {
-          try {
-            err = await dealInterceptors(fetchInterceptor['timeout'], newUrl)
-          } catch (error) {
-            err = error
-          }
-          reject(err)
-          isTimeout = true
-        }, this.timeout)
-
+    res = await new Promise(async (resolve, reject) => {
+      const time = setTimeout(async () => {
         try {
-          res = await fetch(request)
-          clearTimeout(time)
-          resolve(res)
+          err = await dealInterceptors(fetchInterceptor['timeout'], newUrl)
         } catch (error) {
-          clearTimeout(time)
-          try {
-            err = await dealInterceptors(fetchInterceptor['requestError'], error)
-          } catch (error) {
-            err = error
-          }
-          reject(err)
+          err = error
         }
-      })
-    } catch (error) {
-      return Promise.reject(error)
-    }
+        reject(err)
+      }, this.timeout)
+
+      try {
+        res = await fetch(request)
+        clearTimeout(time)
+        resolve(res)
+      } catch (error) {
+        clearTimeout(time)
+        try {
+          err = await dealInterceptors(fetchInterceptor['requestError'], error)
+        } catch (error) {
+          err = error
+        }
+        reject(err)
+      }
+    })
 
     res = await dealInterceptors(fetchInterceptor['response'], res)
     if (res.ok) {

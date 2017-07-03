@@ -4,7 +4,7 @@ const path = require('path')
 module.exports = {
   devtool: 'source-map',
   entry: {
-    'intercept-fetch': './index.ts'
+    'intercept-fetch': './src/index.ts'
   },
   output: {
     path: path.resolve(__dirname, 'bundles'),

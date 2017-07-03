@@ -2,7 +2,7 @@ import 'whatwg-fetch'
 import {
   FetchClient,
   Interceptor
-} from '../../src/index'
+} from '../../src'
 import { url } from '../../mock/github'
 
 const interceptor = new Interceptor({

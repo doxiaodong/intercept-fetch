@@ -8,7 +8,8 @@
     "sourceMap": true,
     "strictNullChecks": false,
     "noUnusedLocals": true,
-    "baseUrl": ".",
+    "baseUrl": "./src",
+    "outDir": "lib",
     "lib": [
       "es2015",
       "dom"

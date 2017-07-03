@@ -2,7 +2,7 @@ import 'whatwg-fetch'
 import {
   FetchClient,
   Interceptor
-} from '../../src/index'
+} from '../../src'
 import { url } from '../../mock/github'
 
 window.fetch = jest.fn().mockImplementation(() => {
@@ -37,7 +37,7 @@ const interceptor = new Interceptor({
 const fetchClient = new FetchClient()
 
 fetchClient.setInterceptors(interceptor)
-fetchClient.timeout = 1000
+fetchClient.setTimeout(1000)
 
 describe('request timeout test', () => {
   test('timeout normal', async () => {

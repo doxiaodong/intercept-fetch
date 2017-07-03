@@ -3,14 +3,14 @@ import 'whatwg-fetch'
 import {
   FetchClient,
   Interceptor
-} from '../../src/index'
+} from '../../src'
 import { url, user } from '../../mock/github'
 
 const interceptor1 = new Interceptor({
   req: {
     id: 1,
     request(url, config) {
-      return Promise.resolve([url, config])
+      return Promise.resolve([url, config]) as any
     }
   }
 })

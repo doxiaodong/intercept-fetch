@@ -1,4 +1,3 @@
-// import cloneDeep from 'lodash-es/cloneDeep'
 import {
   Interceptor,
   IInterceptor
@@ -8,8 +7,8 @@ import { RequestMethod } from './method'
 let fetchInterceptor: { [key: string]: Array<(...param) => Promise<any>> }
 
 export class FetchClient {
-  timeout = 10 * 1000
-  interceptors: Interceptor
+  private timeout = 10 * 1000
+  private interceptors: Interceptor
   constructor() {
     if (typeof fetch !== 'function') {
       throw new Error('FetchClient based on fetch api!!')
@@ -17,7 +16,11 @@ export class FetchClient {
     this.clearInterceptors()
   }
 
-  clearInterceptors() {
+  setTimeout(time: number): void {
+    this.timeout = time
+  }
+
+  clearInterceptors(): void {
     this.interceptors = null
 
     fetchInterceptor = {
@@ -34,7 +37,7 @@ export class FetchClient {
     return this.interceptors
   }
 
-  setInterceptors(interceptors: Interceptor) {
+  setInterceptors(interceptors: Interceptor): void {
     if (!(interceptors instanceof Interceptor)) {
       throw new Error('Error interceptors!!')
     }
@@ -115,23 +118,26 @@ export class FetchClient {
     }
     let res
     let err
-    res = await new Promise(async (resolve, reject) => {
-      const time = setTimeout(async () => {
+
+    const timeoutPromise = new Promise(async (resolve, reject) => {
+      setTimeout(async () => {
         try {
+          // timeout interceptor
           err = await dealInterceptors(fetchInterceptor['timeout'], newUrl)
         } catch (error) {
           err = error
         }
         reject(err)
       }, this.timeout)
+    })
 
+    const fetchPromise = new Promise(async (resolve, reject) => {
       try {
         res = await fetch(request)
-        clearTimeout(time)
         resolve(res)
       } catch (error) {
-        clearTimeout(time)
         try {
+          // requestError interceptor
           err = await dealInterceptors(fetchInterceptor['requestError'], error)
         } catch (error) {
           err = error
@@ -139,13 +145,17 @@ export class FetchClient {
         reject(err)
       }
     })
+    res = await Promise.race([timeoutPromise, fetchPromise])
 
+    // response interceptor
     res = await dealInterceptors(fetchInterceptor['response'], res)
     if (res.ok) {
       let data = await res.json()
+      // success interceptor
       data = await dealInterceptors(fetchInterceptor['success'], data)
       return data
     }
+    // error interceptor
     res = await dealInterceptors(fetchInterceptor['error'], res)
     err = await res.json()
     return Promise.reject(err)
@@ -194,10 +204,8 @@ async function dealInterceptors(interceptors, ...data): Promise<any> {
   let copyData
   if (dataLen === 2) {
     isDoubleParams = true
-    // copyData = cloneDeep(data)
     copyData = data
   } else {
-    // copyData = cloneDeep(data[0])
     copyData = data[0]
   }
 
@@ -207,8 +215,6 @@ async function dealInterceptors(interceptors, ...data): Promise<any> {
   return copyData
 
   async function recursion() {
-    // todo: need to copy copyData?
-    // copyData = cloneDeep(copyData)
     if (current < len) {
       copyData = isDoubleParams ?
         await interceptors[current](...copyData) :
@@ -217,6 +223,5 @@ async function dealInterceptors(interceptors, ...data): Promise<any> {
       return recursion()
     }
     return copyData
-
   }
 }

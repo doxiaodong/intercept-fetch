@@ -3,7 +3,7 @@ import 'whatwg-fetch'
 import {
   FetchClient,
   Interceptor
-} from '../../src/index'
+} from '../../src'
 
 const interceptor1 = new Interceptor({
   requestError: {

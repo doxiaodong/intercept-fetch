@@ -1,7 +1,7 @@
 import {
   FetchClient,
   Interceptor
-} from '../index'
+} from '../src'
 
 const interceptor = new Interceptor({
   timeout: {

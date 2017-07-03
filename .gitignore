@@ -5,10 +5,4 @@ npm-debug.log
 
 bundles/
 coverage/
-
-*.js
-!webpack.*.js
-!__tests__/*.js
-*.d.ts
-!deepcopy.d.ts
-*.js.map
+lib/

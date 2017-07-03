@@ -1,4 +1,4 @@
-import { Interceptor } from '../index'
+import { Interceptor } from '../src'
 
 const interceptor = new Interceptor({
   a: {

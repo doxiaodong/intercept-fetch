@@ -1,9 +1,12 @@
 .DS_Store
 
 .vscode/
+__tests__/
+example/
+mock/
+src/
+webpack.*.js
 
-node_modules/
-npm-debug.log
+yarn.lock
 
-*.ts
-!*.d.ts
+!lib/

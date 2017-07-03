@@ -119,7 +119,7 @@ export class FetchClient {
     let res
     let err
 
-    const timeoutPromise = new Promise((resolve, reject) => {
+    const timeoutPromiseFn = () => new Promise((resolve, reject) => {
       setTimeout(async () => {
         try {
           // timeout interceptor
@@ -141,7 +141,7 @@ export class FetchClient {
         return Promise.reject(err)
       }
     }
-    res = await Promise.race([timeoutPromise, fetchPromiseFn()])
+    res = await Promise.race([timeoutPromiseFn(), fetchPromiseFn()])
 
     // response interceptor
     res = await dealInterceptors(fetchInterceptor['response'], res)

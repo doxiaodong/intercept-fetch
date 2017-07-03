@@ -119,7 +119,7 @@ export class FetchClient {
     let res
     let err
 
-    const timeoutPromise = new Promise(async (resolve, reject) => {
+    const timeoutPromise = new Promise((resolve, reject) => {
       setTimeout(async () => {
         try {
           // timeout interceptor
@@ -131,21 +131,17 @@ export class FetchClient {
       }, this.timeout)
     })
 
-    const fetchPromise = new Promise(async (resolve, reject) => {
+    const fetchPromiseFn = async () => {
       try {
         res = await fetch(request)
-        resolve(res)
+        return res
       } catch (error) {
-        try {
-          // requestError interceptor
-          err = await dealInterceptors(fetchInterceptor['requestError'], error)
-        } catch (error) {
-          err = error
-        }
-        reject(err)
+        // requestError interceptor
+        err = await dealInterceptors(fetchInterceptor['requestError'], error)
+        return Promise.reject(err)
       }
-    })
-    res = await Promise.race([timeoutPromise, fetchPromise])
+    }
+    res = await Promise.race([timeoutPromise, fetchPromiseFn()])
 
     // response interceptor
     res = await dealInterceptors(fetchInterceptor['response'], res)

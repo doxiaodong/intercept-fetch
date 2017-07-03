@@ -4,9 +4,8 @@
 __tests__/
 example/
 mock/
+coverage/
 src/
 webpack.*.js
 
 yarn.lock
-
-!lib/

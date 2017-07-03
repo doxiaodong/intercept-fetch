@@ -38,4 +38,55 @@ describe('request get test', () => {
       expect(error).toBe(url + '?a=1&b=1')
     }
   })
+
+  test('object with undefined or null', async () => {
+    fetchClient.setInterceptors(interceptor)
+    try {
+      await fetchClient.get(url, {
+        a: null
+      })
+    } catch (error) {
+      expect(error).toBe(url)
+    }
+    try {
+      await fetchClient.get(url, {
+        a: undefined
+      })
+    } catch (error) {
+      expect(error).toBe(url)
+    }
+
+    try {
+      await fetchClient.get(url, {
+        a: 'null'
+      })
+    } catch (error) {
+      expect(error).toBe(url + '?a=null')
+    }
+    try {
+      await fetchClient.get(url, {
+        a: 'undefined'
+      })
+    } catch (error) {
+      expect(error).toBe(url + '?a=undefined')
+    }
+  })
+
+  test('object with 0 or ""', async () => {
+    fetchClient.setInterceptors(interceptor)
+    try {
+      await fetchClient.get(url, {
+        a: 0
+      })
+    } catch (error) {
+      expect(error).toBe(url + '?a=0')
+    }
+    try {
+      await fetchClient.get(url, {
+        a: ''
+      })
+    } catch (error) {
+      expect(error).toBe(url + '?a=')
+    }
+  })
 })

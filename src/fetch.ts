@@ -186,7 +186,7 @@ export class FetchClient {
 
 function addQueryString(url: string, param: { [key: string]: any }): string {
   for (const key in param) {
-    if (param.hasOwnProperty(key)) {
+    if (param.hasOwnProperty(key) && param[key] != null) {
       url += url.indexOf('?') === -1 ? '?' : '&'
       url += `${encodeURIComponent(key)}=${encodeURIComponent(param[key])}`
     }
@@ -216,11 +216,9 @@ async function dealInterceptors(interceptors, ...data): Promise<any> {
     // todo: need to copy copyData?
     // copyData = cloneDeep(copyData)
     if (current < len) {
-      if (isDoubleParams) {
-        copyData = await interceptors[current](...copyData)
-      } else {
-        copyData = await interceptors[current](copyData)
-      }
+      copyData = isDoubleParams ?
+        await interceptors[current](...copyData) :
+        await interceptors[current](copyData)
       current++
       return recursion()
     }

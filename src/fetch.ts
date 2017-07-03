@@ -101,12 +101,7 @@ export class FetchClient {
       throw new Error('First argument must be a url string or Request instance.')
     }
     // request interceptor
-    let ret
-    try {
-      ret = await dealInterceptors(fetchInterceptor['request'], newUrl, newConfig)
-    } catch (error) {
-      return Promise.reject(error)
-    }
+    const ret = await dealInterceptors(fetchInterceptor['request'], newUrl, newConfig)
     newUrl = ret[0]
     newConfig = ret[1]
 
@@ -118,53 +113,48 @@ export class FetchClient {
     } else {
       throw new Error('First argument must be a url string or Request instance.')
     }
+    let res
+    let err
+    try {
+      res = await new Promise(async (resolve, reject) => {
+        let isTimeout = false
+        const time = setTimeout(async () => {
+          try {
+            err = await dealInterceptors(fetchInterceptor['timeout'], newUrl)
+          } catch (error) {
+            err = error
+          }
+          reject(err)
+          isTimeout = true
+        }, this.timeout)
 
-    return new Promise(async (resolve, reject) => {
-      let err
-      let isTimeout = false
-      const time = setTimeout(async () => {
-        try {
-          err = await dealInterceptors(fetchInterceptor['timeout'], newUrl)
-        } catch (error) {
-          err = error
-        }
-        isTimeout = true
-        reject(err)
-      }, this.timeout)
-
-      try {
-        let res
         try {
           res = await fetch(request)
           clearTimeout(time)
+          resolve(res)
         } catch (error) {
           clearTimeout(time)
-          err = await dealInterceptors(fetchInterceptor['requestError'], error)
+          try {
+            err = await dealInterceptors(fetchInterceptor['requestError'], error)
+          } catch (error) {
+            err = error
+          }
           reject(err)
-          return
         }
-        if (isTimeout) {
-          return
-        }
+      })
+    } catch (error) {
+      return Promise.reject(error)
+    }
 
-        res = await dealInterceptors(fetchInterceptor['response'], res)
-        if (res.ok) {
-          let data = await res.json()
-          data = await dealInterceptors(fetchInterceptor['success'], data)
-          resolve(data)
-          return
-        }
-        res = await dealInterceptors(fetchInterceptor['error'], res)
-        try {
-          err = await res.json()
-        } catch (error) {
-          err = error
-        }
-      } catch (error) {
-        err = error
-      }
-      reject(err)
-    })
+    res = await dealInterceptors(fetchInterceptor['response'], res)
+    if (res.ok) {
+      let data = await res.json()
+      data = await dealInterceptors(fetchInterceptor['success'], data)
+      return data
+    }
+    res = await dealInterceptors(fetchInterceptor['error'], res)
+    err = await res.json()
+    return Promise.reject(err)
   }
 
   // add params to get

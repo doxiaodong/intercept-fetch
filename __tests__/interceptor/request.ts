@@ -4,7 +4,7 @@ import {
   FetchClient,
   Interceptor
 } from '../../src'
-import { url, user } from '../../mock/github'
+import { url as mockUrl, user } from '../../mock/github'
 
 const interceptor1 = new Interceptor({
   req: {
@@ -30,7 +30,7 @@ fetchMock.get('*', user)
 describe('request interceptor test', () => {
   test('resolve', async () => {
     fetchClient.setInterceptors(interceptor1)
-    const data = await fetchClient.get(url)
+    const data = await fetchClient.get(mockUrl)
     expect(data).toEqual(user)
   })
 
@@ -38,7 +38,7 @@ describe('request interceptor test', () => {
     fetchClient.clearInterceptors()
     fetchClient.setInterceptors(interceptor2)
     try {
-      await fetchClient.get(url)
+      await fetchClient.get(mockUrl)
     } catch (error) {
       expect(error).toBe('req reject')
     }

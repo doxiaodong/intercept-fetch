@@ -3,7 +3,7 @@ import {
   FetchClient,
   Interceptor
 } from '../../src'
-import { url } from '../../mock/github'
+import { url as mockUrl } from '../../mock/github'
 
 window.fetch = jest.fn().mockImplementation(() => {
   return new Promise((resolve, reject) => {
@@ -42,7 +42,7 @@ fetchClient.setTimeout(1000)
 describe('request timeout test', () => {
   test('timeout normal', async () => {
     try {
-      await fetchClient.get(url)
+      await fetchClient.get(mockUrl)
     } catch (error) {
       expect(error).toEqual('error')
     }

@@ -3,7 +3,7 @@ import {
   FetchClient,
   Interceptor
 } from '../../src'
-import { url } from '../../mock/github'
+import { url as mockUrl } from '../../mock/github'
 
 const interceptor = new Interceptor({
   req: {
@@ -20,73 +20,73 @@ describe('request get test', () => {
   test('url without ?', async () => {
     fetchClient.setInterceptors(interceptor)
     try {
-      await fetchClient.get(url, {
+      await fetchClient.get(mockUrl, {
         a: 1
       })
     } catch (error) {
-      expect(error).toBe(url + '?a=1')
+      expect(error).toBe(mockUrl + '?a=1')
     }
   })
 
   test('url with ?', async () => {
     fetchClient.setInterceptors(interceptor)
     try {
-      await fetchClient.get(url + '?a=1', {
+      await fetchClient.get(mockUrl + '?a=1', {
         b: 1
       })
     } catch (error) {
-      expect(error).toBe(url + '?a=1&b=1')
+      expect(error).toBe(mockUrl + '?a=1&b=1')
     }
   })
 
   test('object with undefined or null', async () => {
     fetchClient.setInterceptors(interceptor)
     try {
-      await fetchClient.get(url, {
+      await fetchClient.get(mockUrl, {
         a: null
       })
     } catch (error) {
-      expect(error).toBe(url)
+      expect(error).toBe(mockUrl)
     }
     try {
-      await fetchClient.get(url, {
+      await fetchClient.get(mockUrl, {
         a: undefined
       })
     } catch (error) {
-      expect(error).toBe(url)
+      expect(error).toBe(mockUrl)
     }
 
     try {
-      await fetchClient.get(url, {
+      await fetchClient.get(mockUrl, {
         a: 'null'
       })
     } catch (error) {
-      expect(error).toBe(url + '?a=null')
+      expect(error).toBe(mockUrl + '?a=null')
     }
     try {
-      await fetchClient.get(url, {
+      await fetchClient.get(mockUrl, {
         a: 'undefined'
       })
     } catch (error) {
-      expect(error).toBe(url + '?a=undefined')
+      expect(error).toBe(mockUrl + '?a=undefined')
     }
   })
 
   test('object with 0 or ""', async () => {
     fetchClient.setInterceptors(interceptor)
     try {
-      await fetchClient.get(url, {
+      await fetchClient.get(mockUrl, {
         a: 0
       })
     } catch (error) {
-      expect(error).toBe(url + '?a=0')
+      expect(error).toBe(mockUrl + '?a=0')
     }
     try {
-      await fetchClient.get(url, {
+      await fetchClient.get(mockUrl, {
         a: ''
       })
     } catch (error) {
-      expect(error).toBe(url + '?a=')
+      expect(error).toBe(mockUrl + '?a=')
     }
   })
 })

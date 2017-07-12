@@ -17,7 +17,7 @@ export class Interceptor {
   has(key): boolean {
     return this.interceptors.hasOwnProperty(key)
   }
-  forEach(callback: (value?: IInterceptor, key?, target?: Interceptor) => void, thisArg?): void {
+  forEach(callback: (value?: IInterceptor, key?: any, target?: Interceptor) => void, thisArg?): void {
     for (const key in this.interceptors) {
       if (this.interceptors.hasOwnProperty(key)) {
         callback.call(thisArg, this.interceptors[key], key, this)

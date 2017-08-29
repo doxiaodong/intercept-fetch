@@ -1,3 +1,5 @@
+import fetchJsonp from 'fetch-jsonp'
+
 export class Interceptor {
   private interceptors: IInterceptors
   constructor(interceptors: IInterceptors) {
@@ -49,4 +51,8 @@ export interface IInterceptor {
   success?: (data: any) => Promise<any>
   error?: (res: Response) => Promise<Response>
   timeout?: (url: string) => Promise<any>
+  jsonpRequest?: (url: string, config?: fetchJsonp.Options) => Promise<[string, fetchJsonp.Options]>
+  jsonpResponse?: (res: fetchJsonp.Response) => Promise<fetchJsonp.Response>
+  jsonpSuccess?: (data: any) => Promise<any>
+  jsonpError?: (error: any) => Promise<any>
 }

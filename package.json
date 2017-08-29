@@ -56,5 +56,8 @@
       "ts",
       "js"
     ]
+  },
+  "dependencies": {
+    "fetch-jsonp": "^1.1.1"
   }
 }

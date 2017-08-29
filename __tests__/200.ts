@@ -1,4 +1,4 @@
-import * as fetchMock from 'fetch-mock'
+import fetchMock from 'fetch-mock'
 import 'whatwg-fetch'
 import { FetchClient, Interceptor } from '../src'
 import { url, user } from '../mock/github'

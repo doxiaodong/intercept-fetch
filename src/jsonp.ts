@@ -12,7 +12,6 @@ export default async function jsonp(url: string, config?: fetchJsonp.Options, fe
   try {
     res = await fetchJsonp(newUrl, newConfig)
   } catch (error) {
-    console.log(error)
     err = await dealInterceptors(fetchInterceptor['jsonpError'], error)
     return Promise.reject(err)
   }

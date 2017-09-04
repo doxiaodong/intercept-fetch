@@ -1,10 +1,23 @@
+import fetchJsonp from 'fetch-jsonp'
 import {
   Interceptor,
   IInterceptor
 } from './interceptor'
 import { RequestMethod } from './method'
+import {
+  dealInterceptors,
+  addQueryString
+} from './utils'
+import jsonp from './jsonp'
 
-let fetchInterceptor: { [key: string]: Array<(...param) => Promise<any>> }
+const fetchInterceptor: { [key: string]: Array<(...param) => Promise<any>> } = { }
+
+const interceptorNames = [
+  'request', 'requestError', 'response',
+  'success', 'error', 'timeout',
+  'jsonpRequest', 'jsonpError',
+  'jsonpResponse', 'jsonpSuccess'
+]
 
 export class FetchClient {
   private timeout = 10 * 1000
@@ -23,14 +36,9 @@ export class FetchClient {
   clearInterceptors(): void {
     this.interceptors = null
 
-    fetchInterceptor = {
-      request: [],
-      requestError: [],
-      response: [],
-      success: [],
-      error: [],
-      timeout: []
-    }
+    interceptorNames.forEach((item) => {
+      fetchInterceptor[item] = []
+    })
   }
 
   getInterceptors() {
@@ -63,32 +71,11 @@ export class FetchClient {
       return b.id - a.id
     }).reverse()
     sortInterceptors.forEach((value) => {
-      const {
-        request,
-        requestError,
-        response,
-        success,
-        error,
-        timeout
-      } = value
-      if (request) {
-        fetchInterceptor['request'].push(request)
-      }
-      if (requestError) {
-        fetchInterceptor['requestError'].push(requestError)
-      }
-      if (response) {
-        fetchInterceptor['response'].push(response)
-      }
-      if (success) {
-        fetchInterceptor['success'].push(success)
-      }
-      if (error) {
-        fetchInterceptor['error'].push(error)
-      }
-      if (timeout) {
-        fetchInterceptor['timeout'].push(timeout)
-      }
+      interceptorNames.forEach((item) => {
+        if (value[item]) {
+          fetchInterceptor[item].push(value[item])
+        }
+      })
     })
   }
 
@@ -182,42 +169,10 @@ export class FetchClient {
   patch(url: string, config?: RequestInit) {
     return this.request(url, { ...config, method: RequestMethod.Patch })
   }
-}
-
-function addQueryString(url: string, param: { [key: string]: any }): string {
-  for (const key in param) {
-    if (param.hasOwnProperty(key) && param[key] != null) {
-      url += url.indexOf('?') === -1 ? '?' : '&'
-      url += `${encodeURIComponent(key)}=${encodeURIComponent(param[key])}`
+  jsonp(url: string, param?: { [key: string]: any }, config?: fetchJsonp.Options) {
+    if (param) {
+      url = addQueryString(url, param)
     }
-  }
-  return url
-}
-
-async function dealInterceptors(interceptors, ...data): Promise<any> {
-  let isDoubleParams = false
-  const dataLen = data.length
-  let copyData
-  if (dataLen === 2) {
-    isDoubleParams = true
-    copyData = data
-  } else {
-    copyData = data[0]
-  }
-
-  const len = interceptors.length
-  let current = 0
-  copyData = await recursion()
-  return copyData
-
-  async function recursion() {
-    if (current < len) {
-      copyData = isDoubleParams ?
-        await interceptors[current](...copyData) :
-        await interceptors[current](copyData)
-      current++
-      return recursion()
-    }
-    return copyData
+    return jsonp(url, { timeout: this.timeout, ...config }, fetchInterceptor)
   }
 }

@@ -11,3 +11,4 @@ cache:
 
 script:
   - npm run ci
+  - npm run codecov

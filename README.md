@@ -101,10 +101,15 @@ fetchClient.get('http://google.com', { date: Date.now() })
 export interface IInterceptor {
   id?: number
   request?: (url: string | Request, config: RequestInit) => Promise<[string | Request, RequestInit]>
+  requestError?: (error: any) => Promise<any>
   response?: (res: Response) => Promise<Response>
   success?: (data: any) => Promise<any>
   error?: (res: Response) => Promise<Response>
   timeout?: (url: string) => Promise<any>
+  jsonpRequest?: (url: string, config?: fetchJsonp.Options) => Promise<[string, fetchJsonp.Options]>
+  jsonpResponse?: (res: fetchJsonp.Response) => Promise<fetchJsonp.Response>
+  jsonpSuccess?: (data: any) => Promise<any>
+  jsonpError?: (error: any) => Promise<any>
 }
 export interface IInterceptors {
   [key: string]: IInterceptor

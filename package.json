@@ -60,6 +60,6 @@
     ]
   },
   "dependencies": {
-    "fetch-jsonp": "^1.1.1"
+    "fetch-jsonp": "^1.1.3"
   }
 }

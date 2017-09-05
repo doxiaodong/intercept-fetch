@@ -12,6 +12,7 @@ const interceptor = new Interceptor({
       // can also use Promise.resolve(url)
     },
     response(res) {
+      console.log('response: ', res)
       return Promise.resolve(res)
     },
     jsonpRequest(url, config) {
@@ -30,7 +31,7 @@ const interceptor = new Interceptor({
 })
 const fetchClient = new FetchClient()
 fetchClient.setInterceptors(interceptor)
-// fetchClient.setTimeout(10)
+fetchClient.setTimeout(10)
 
 async function req() {
   const data = await fetchClient.get('https://api.github.com/users/doxiaodong')

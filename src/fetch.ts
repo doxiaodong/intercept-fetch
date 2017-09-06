@@ -106,26 +106,36 @@ export class FetchClient {
     let res
     let err
 
+    let isTimeout = false
+    let isFetched = false
+
     const timeoutPromiseFn = () => new Promise((resolve, reject) => {
       setTimeout(async () => {
-        try {
-          // timeout interceptor
-          err = await dealInterceptors(fetchInterceptor['timeout'], newUrl)
-        } catch (error) {
-          err = error
+        if (!isFetched) {
+          isTimeout = true
+          try {
+            // timeout interceptor
+            err = await dealInterceptors(fetchInterceptor['timeout'], newUrl)
+          } catch (error) {
+            err = error
+          }
+          reject(err)
         }
-        reject(err)
       }, this.timeout)
     })
 
     const fetchPromiseFn = async () => {
       try {
         res = await fetch(request)
+        isFetched = true
         return res
       } catch (error) {
-        // requestError interceptor
-        err = await dealInterceptors(fetchInterceptor['requestError'], error)
-        return Promise.reject(err)
+        isFetched = true
+        if (!isTimeout) {
+          // requestError interceptor
+          err = await dealInterceptors(fetchInterceptor['requestError'], error)
+          return Promise.reject(err)
+        }
       }
     }
     res = await Promise.race([timeoutPromiseFn(), fetchPromiseFn()])

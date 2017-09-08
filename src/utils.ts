@@ -1,8 +1,8 @@
 export function addQueryString(url: string, param: { [key: string]: any }): string {
   for (const key in param) {
-    if (param.hasOwnProperty(key) && param[key] != null) {
+    if (param.hasOwnProperty(key) && param[key] !== null && typeof param[key] !== 'undefined') {
       url += url.indexOf('?') === -1 ? '?' : '&'
-      url += `${encodeURIComponent(key)}=${encodeURIComponent(param[key])}`
+      url += `${encodeURIComponent(key)}=${encodeURIComponent(param[key]).replace(/%2C/g, ',')}`
     }
   }
   return url

@@ -2,7 +2,7 @@ export function addQueryString(url: string, param: { [key: string]: any }): stri
   for (const key in param) {
     if (param.hasOwnProperty(key) && !isEmpty(param[key])) {
       url += url.indexOf('?') === -1 ? '?' : '&'
-      url += `${encodeURIComponent(key)}=${encodeURIComponent(param[key]).replace(/%2C/g, ',')}`
+      url += `${encodeURIComponent(key)}=${encodeURIComponent(param[key])}`
     }
   }
   return url

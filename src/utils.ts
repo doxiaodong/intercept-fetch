@@ -1,11 +1,15 @@
 export function addQueryString(url: string, param: { [key: string]: any }): string {
   for (const key in param) {
-    if (param.hasOwnProperty(key) && param[key] != null) {
+    if (param.hasOwnProperty(key) && !isEmpty(param[key])) {
       url += url.indexOf('?') === -1 ? '?' : '&'
       url += `${encodeURIComponent(key)}=${encodeURIComponent(param[key])}`
     }
   }
   return url
+}
+
+export function isEmpty(value) {
+  return typeof value === 'undefined' || value === null
 }
 
 export async function dealInterceptors(interceptors, ...data): Promise<any> {

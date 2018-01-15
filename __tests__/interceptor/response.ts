@@ -1,4 +1,4 @@
-import fetchMock from 'fetch-mock'
+import * as fetchMock from 'fetch-mock'
 import 'whatwg-fetch'
 import {
   FetchClient,

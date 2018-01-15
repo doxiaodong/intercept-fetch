@@ -1,4 +1,4 @@
-import fetchJsonp from 'fetch-jsonp'
+import * as fetchJsonp from 'fetch-jsonp'
 import { dealInterceptors } from './utils'
 
 export default async function jsonp(url: string, config?: fetchJsonp.Options, fetchInterceptor = {}) {

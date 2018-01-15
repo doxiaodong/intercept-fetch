@@ -1,4 +1,4 @@
-import fetchJsonp from 'fetch-jsonp'
+import * as fetchJsonp from 'fetch-jsonp'
 
 export class Interceptor {
   private interceptors: IInterceptors

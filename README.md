@@ -71,7 +71,7 @@ const interceptor = new Interceptor({
 
 fetchClient.setInterceptors(interceptor)
 
-fetchClient.get('http://google.com')
+fetchClient.get('https://google.com')
 
 ```
 
